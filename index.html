@@ -1,0 +1,37 @@
+<script>
+  function getBalance() {
+    return parseFloat(localStorage.getItem("userBalance") || "0");
+  }
+
+  function updateBalanceDisplay() {
+    document.getElementById("balance").textContent = getBalance().toFixed(2);
+  }
+
+  function submitPayment() {
+    const amount = parseFloat(document.getElementById("usdAmount").value);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Введите сумму в $");
+      return;
+    }
+    localStorage.setItem("pendingTopUp", amount);
+    document.getElementById("afterPay").style.display = "block";
+  }
+
+  function confirmPayment() {
+    const pending = parseFloat(localStorage.getItem("pendingTopUp"));
+    if (!pending || isNaN(pending)) {
+      alert("Нет ожидаемого платежа.");
+      return;
+    }
+
+    let current = getBalance();
+    current += pending;
+    localStorage.setItem("userBalance", current.toFixed(2));
+    localStorage.removeItem("pendingTopUp");
+    document.getElementById("afterPay").style.display = "none";
+    updateBalanceDisplay();
+    alert(Баланс пополнен на $${pending});
+  }
+
+  updateBalanceDisplay();
+</script>
